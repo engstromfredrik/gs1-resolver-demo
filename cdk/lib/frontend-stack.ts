@@ -34,35 +34,16 @@ export class FrontendStack extends cdk.Stack {
     const oai = new cloudfront.OriginAccessIdentity(this, 'OAI');
     websiteBucket.grantRead(oai);
 
-    // Extract API Gateway domain from URL
-    const apiDomain = props.apiUrl.replace('https://', '').replace(/\/$/, '');
+    // Extract API Gateway domain from URL (remove https:// and trailing path)
+    const apiUrlParts = props.apiUrl.replace('https://', '').replace(/\/$/, '').split('/');
+    const apiDomain = apiUrlParts[0];
 
     // CloudFront Distribution
     const distribution = new cloudfront.Distribution(this, 'Distribution', {
       defaultBehavior: {
         origin: new origins.S3Origin(websiteBucket, { originAccessIdentity: oai }),
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-        cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
-      },
-      additionalBehaviors: {
-        '/01/*': {
-          origin: new origins.HttpOrigin(apiDomain, {
-            protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY,
-          }),
-          viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-          cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
-          allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
-          originRequestPolicy: cloudfront.OriginRequestPolicy.ALL_VIEWER,
-        },
-        '/admin/*': {
-          origin: new origins.HttpOrigin(apiDomain, {
-            protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY,
-          }),
-          viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-          cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
-          allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
-          originRequestPolicy: cloudfront.OriginRequestPolicy.ALL_VIEWER,
-        },
+        cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED, // Disable caching for SPA routing
       },
       domainNames: [props.domainName],
       certificate: props.certificate,
@@ -76,9 +57,10 @@ export class FrontendStack extends cdk.Stack {
       ],
     });
 
-    // Route53 alias record
-    const hostedZone = route53.HostedZone.fromLookup(this, 'HostedZone', {
-      domainName: props.hostedZoneName,
+    // Route53 alias record - use specific hosted zone ID
+    const hostedZone = route53.HostedZone.fromHostedZoneAttributes(this, 'HostedZone', {
+      hostedZoneId: 'Z02189273AOR9DCFLK4K',
+      zoneName: props.hostedZoneName,
     });
 
     new route53.ARecord(this, 'AliasRecord', {

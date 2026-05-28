@@ -15,9 +15,10 @@ export class DomainStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: DomainStackProps) {
     super(scope, id, props);
 
-    // Lookup existing hosted zone
-    this.hostedZone = route53.HostedZone.fromLookup(this, 'HostedZone', {
-      domainName: props.hostedZoneName,
+    // Lookup existing hosted zone by ID to avoid ambiguity
+    this.hostedZone = route53.HostedZone.fromHostedZoneAttributes(this, 'HostedZone', {
+      hostedZoneId: 'Z02189273AOR9DCFLK4K',
+      zoneName: props.hostedZoneName,
     });
 
     // Create ACM certificate (must be in us-east-1 for CloudFront)

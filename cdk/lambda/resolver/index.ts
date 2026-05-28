@@ -11,7 +11,11 @@ export const handler = async (event: any) => {
   if (!gtin || !batch) {
     return {
       statusCode: 400,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      },
       body: JSON.stringify({ error: 'Missing GTIN or Batch parameter' }),
     };
   }
@@ -30,7 +34,11 @@ export const handler = async (event: any) => {
     if (!result.Item) {
       return {
         statusCode: 404,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': 'Content-Type',
+        },
         body: JSON.stringify({
           error: 'Product not found',
           gtin,
@@ -41,14 +49,22 @@ export const handler = async (event: any) => {
 
     return {
       statusCode: 200,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      },
       body: JSON.stringify(result.Item),
     };
   } catch (error) {
     console.error('Error querying DynamoDB:', error);
     return {
       statusCode: 500,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      },
       body: JSON.stringify({ error: 'Internal server error' }),
     };
   }
