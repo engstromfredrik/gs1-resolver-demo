@@ -37,8 +37,19 @@ This script will:
 - Build TypeScript code
 - Build React app
 - Deploy all AWS stacks
+- **Prompt to seed sample products** (optional)
 
 **Note**: First deployment takes ~15-20 minutes due to CloudFront distribution and ACM certificate validation.
+
+### 1a. Seed Sample Products (Optional)
+
+The deployment script will ask if you want to seed sample products. You can also run it manually anytime:
+
+```bash
+./seed-products.sh
+```
+
+This adds 5 Swedish grocery products with complete nutrition facts, ingredients, and allergen information.
 
 ### 2. Create Admin User
 

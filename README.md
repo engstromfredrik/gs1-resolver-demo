@@ -108,6 +108,8 @@ cdk deploy --all
 
 **Note**: The DomainStack will create an ACM certificate that requires DNS validation. This may take 5-10 minutes.
 
+The deployment script will prompt you to seed sample products after deployment completes.
+
 ### Step 4: Create Admin User
 
 After deployment, create an admin user in Cognito:

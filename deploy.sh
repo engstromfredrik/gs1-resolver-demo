@@ -46,5 +46,15 @@ echo "✅ Deployment complete!"
 echo ""
 echo "Next steps:"
 echo "1. Create an admin user in Cognito"
-echo "2. Visit https://gs1-resolver.engstrom.cloud/admin to manage products"
-echo "3. Test resolver at https://gs1-resolver.engstrom.cloud/01/{gtin}/10/{batch}"
+echo "2. (Optional) Run ./seed-products.sh to add sample products"
+echo "3. Visit https://gs1-resolver.engstrom.cloud/admin to manage products"
+echo "4. Test resolver at https://gs1-resolver.engstrom.cloud/01/{gtin}/10/{batch}"
+echo ""
+read -p "Do you want to seed sample products now? (y/n) " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    echo ""
+    echo "🌱 Seeding sample products..."
+    ./seed-products.sh
+fi
