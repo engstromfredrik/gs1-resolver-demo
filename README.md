@@ -123,6 +123,21 @@ aws cognito-idp admin-create-user \
 
 Get the User Pool ID from CDK outputs or AWS Console.
 
+### Step 5: Seed Sample Data (Optional)
+
+Add sample Swedish grocery products to test the resolver:
+
+```bash
+./seed-products.sh
+```
+
+This adds 5 products:
+- Garant Pannkakor (7340083450419)
+- Garant Krossade Tomater (7340083438158)
+- Eldorado Vispgrädde 36% (7340083407338)
+- Garant Svensk Lantmjölk 1,5% (7340083482397)
+- Eldorado Havregryn (7340083422010)
+
 ## 🧪 Testing
 
 ### Test Resolver Endpoint

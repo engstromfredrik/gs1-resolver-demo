@@ -1,0 +1,15 @@
+{
+  "name": "cdk-scripts",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "seed": "tsx seed-data.ts"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.0.0",
+    "@aws-sdk/lib-dynamodb": "^3.0.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.0.0"
+  }
+}
