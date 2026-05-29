@@ -1,8 +1,24 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 export const NotFound = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const state = location.state as { gtin?: string; batch?: string } | null;
+  
+  const [gtin, setGtin] = useState('');
+  const [batch, setBatch] = useState('');
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (gtin.trim()) {
+      if (batch.trim()) {
+        navigate(`/01/${gtin.trim()}/10/${batch.trim()}`);
+      } else {
+        navigate(`/01/${gtin.trim()}`);
+      }
+    }
+  };
 
   return (
     <div style={styles.container}>
@@ -24,9 +40,35 @@ export const NotFound = () => {
           </div>
         )}
 
-        <p style={styles.help}>
-          Please check the code and try again, or contact support if you believe this is an error.
-        </p>
+        <div style={styles.searchSection}>
+          <h2 style={styles.searchTitle}>Try Another Product</h2>
+          <form onSubmit={handleSearch} style={styles.form}>
+            <div style={styles.inputGroup}>
+              <label style={styles.label}>GTIN</label>
+              <input
+                type="text"
+                value={gtin}
+                onChange={(e) => setGtin(e.target.value)}
+                placeholder="Enter GTIN (e.g., 1234567890001)"
+                style={styles.input}
+                required
+              />
+            </div>
+            <div style={styles.inputGroup}>
+              <label style={styles.label}>Batch (optional)</label>
+              <input
+                type="text"
+                value={batch}
+                onChange={(e) => setBatch(e.target.value)}
+                placeholder="Leave empty for any batch"
+                style={styles.input}
+              />
+            </div>
+            <button type="submit" style={styles.button}>
+              Search Product
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );
@@ -38,13 +80,13 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#0C1122',
     padding: '20px',
   },
   card: {
     backgroundColor: 'white',
-    borderRadius: '8px',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+    borderRadius: '12px',
+    boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
     padding: '40px',
     maxWidth: '500px',
     width: '100%',
@@ -59,7 +101,7 @@ const styles: Record<string, React.CSSProperties> = {
   title: {
     fontSize: '28px',
     marginBottom: '20px',
-    color: '#333',
+    color: '#0C1122',
   },
   message: {
     fontSize: '16px',
@@ -70,12 +112,57 @@ const styles: Record<string, React.CSSProperties> = {
   details: {
     backgroundColor: '#f8f9fa',
     padding: '15px',
-    borderRadius: '4px',
+    borderRadius: '8px',
     marginBottom: '20px',
     textAlign: 'left',
   },
-  help: {
+  searchSection: {
+    marginTop: '30px',
+    paddingTop: '30px',
+    borderTop: '2px solid #e0e0e0',
+  },
+  searchTitle: {
+    fontSize: '20px',
+    color: '#3B507D',
+    marginBottom: '20px',
+  },
+  form: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '15px',
+  },
+  inputGroup: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    textAlign: 'left',
+  },
+  label: {
     fontSize: '14px',
-    color: '#999',
+    fontWeight: '600',
+    color: '#0C1122',
+    marginBottom: '5px',
+  },
+  input: {
+    width: '100%',
+    padding: '12px',
+    fontSize: '16px',
+    border: '2px solid #e0e0e0',
+    borderRadius: '8px',
+    outline: 'none',
+    transition: 'border-color 0.2s',
+    boxSizing: 'border-box',
+  },
+  button: {
+    backgroundColor: '#3B507D',
+    color: 'white',
+    padding: '14px 24px',
+    fontSize: '16px',
+    fontWeight: '600',
+    border: 'none',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    transition: 'background-color 0.2s',
+    marginTop: '10px',
   },
 };

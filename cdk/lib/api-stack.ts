@@ -63,6 +63,11 @@ export class ApiStack extends cdk.Stack {
     const resolverIntegration = new apigateway.LambdaIntegration(resolverFn);
     const ai01 = api.root.addResource('01');
     const gtinResource = ai01.addResource('{gtin}');
+    
+    // Route for GTIN only: GET /01/{gtin}
+    gtinResource.addMethod('GET', resolverIntegration);
+    
+    // Route for GTIN + batch: GET /01/{gtin}/10/{batch}
     const ai10 = gtinResource.addResource('10');
     const batchResource = ai10.addResource('{batch}');
     batchResource.addMethod('GET', resolverIntegration);

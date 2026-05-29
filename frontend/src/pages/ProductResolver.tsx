@@ -10,7 +10,7 @@ export const ProductResolver = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!gtin || !batch) {
+    if (!gtin) {
       navigate('/not-found');
       return;
     }

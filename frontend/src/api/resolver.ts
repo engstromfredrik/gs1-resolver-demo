@@ -10,9 +10,12 @@ export const loadConfig = async () => {
   return config;
 };
 
-export const resolveProduct = async (gtin: string, batch: string): Promise<Product> => {
+export const resolveProduct = async (gtin: string, batch?: string): Promise<Product> => {
   const cfg = await loadConfig();
-  const response = await fetch(`${cfg.apiUrl}01/${gtin}/10/${batch}`);
+  const url = batch 
+    ? `${cfg.apiUrl}01/${gtin}/10/${batch}`
+    : `${cfg.apiUrl}01/${gtin}`;
+  const response = await fetch(url);
   
   if (!response.ok) {
     throw new Error('Product not found');

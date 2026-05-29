@@ -8,6 +8,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/01/:gtin/10/:batch" element={<ProductResolver />} />
+        <Route path="/01/:gtin" element={<ProductResolver />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/not-found" element={<NotFound />} />
         <Route path="*" element={<NotFound />} />
