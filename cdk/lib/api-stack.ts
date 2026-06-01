@@ -48,7 +48,7 @@ export class ApiStack extends cdk.Stack {
       restApiName: 'gs1-resolver-api',
       description: 'GS1 Resolver API',
       defaultCorsPreflightOptions: {
-        allowOrigins: apigateway.Cors.ALL_ORIGINS,
+        allowOrigins: ['https://gs1-resolver.engstrom.cloud'],
         allowMethods: apigateway.Cors.ALL_METHODS,
         allowHeaders: ['Content-Type', 'Authorization'],
       },

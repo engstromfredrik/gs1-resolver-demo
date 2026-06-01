@@ -3,6 +3,23 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { resolveProduct } from '../api/resolver';
 import { Product } from '../types';
 
+const isValidRedirectUrl = (url: string): boolean => {
+  try {
+    const parsed = new URL(url);
+    const allowedDomains = [
+      'www.axfood.se',
+      'id.axfood.se',
+    ];
+    
+    // Check exact match or engstrom.cloud subdomain
+    return allowedDomains.includes(parsed.hostname) || 
+           parsed.hostname.endsWith('.engstrom.cloud') ||
+           parsed.hostname === 'engstrom.cloud';
+  } catch {
+    return false;
+  }
+};
+
 export const ProductResolver = () => {
   const { gtin, batch } = useParams<{ gtin: string; batch: string }>();
   const navigate = useNavigate();
@@ -19,7 +36,12 @@ export const ProductResolver = () => {
       .then((data) => {
         setProduct(data);
         if (data.linkType === 'marketing' && data.targetUrl) {
-          window.location.href = data.targetUrl;
+          if (isValidRedirectUrl(data.targetUrl)) {
+            window.location.href = data.targetUrl;
+          } else {
+            console.error('Invalid redirect URL:', data.targetUrl);
+            navigate('/not-found');
+          }
         }
       })
       .catch(() => {

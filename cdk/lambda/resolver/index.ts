@@ -4,6 +4,31 @@ import { DynamoDBDocumentClient, GetCommand, QueryCommand } from '@aws-sdk/lib-d
 const client = new DynamoDBClient({});
 const ddb = DynamoDBDocumentClient.from(client);
 const TABLE_NAME = process.env.TABLE_NAME!;
+const ALLOWED_ORIGIN = 'https://gs1-resolver.engstrom.cloud';
+
+const isValidGtin = (gtin: string): boolean => {
+  return /^\d{8,14}$/.test(gtin);
+};
+
+const isValidBatch = (batch: string): boolean => {
+  return /^[a-zA-Z0-9]{1,50}$/.test(batch);
+};
+
+const corsHeaders = {
+  'Content-Type': 'application/json',
+  'Access-Control-Allow-Origin': ALLOWED_ORIGIN,
+  'Access-Control-Allow-Headers': 'Content-Type',
+  'Access-Control-Allow-Methods': 'GET, OPTIONS',
+};
+
+const sanitizeItem = (item: any) => ({
+  gtin: item.gtin,
+  batch: item.batch,
+  linkType: item.linkType,
+  targetUrl: item.targetUrl,
+  productData: item.productData,
+  updatedAt: item.updatedAt,
+});
 
 export const handler = async (event: any) => {
   const { gtin, batch } = event.pathParameters || {};
@@ -11,12 +36,24 @@ export const handler = async (event: any) => {
   if (!gtin) {
     return {
       statusCode: 400,
-      headers: { 
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-      },
+      headers: corsHeaders,
       body: JSON.stringify({ error: 'Missing GTIN parameter' }),
+    };
+  }
+
+  if (!isValidGtin(gtin)) {
+    return {
+      statusCode: 400,
+      headers: corsHeaders,
+      body: JSON.stringify({ error: 'Invalid GTIN format. Must be 8-14 digits.' }),
+    };
+  }
+
+  if (batch && !isValidBatch(batch)) {
+    return {
+      statusCode: 400,
+      headers: corsHeaders,
+      body: JSON.stringify({ error: 'Invalid batch format. Must be alphanumeric, max 50 characters.' }),
     };
   }
 
@@ -36,11 +73,7 @@ export const handler = async (event: any) => {
       if (!result.Item) {
         return {
           statusCode: 404,
-          headers: { 
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Headers': 'Content-Type',
-          },
+          headers: corsHeaders,
           body: JSON.stringify({
             error: 'Product not found',
             gtin,
@@ -51,12 +84,8 @@ export const handler = async (event: any) => {
 
       return {
         statusCode: 200,
-        headers: { 
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Headers': 'Content-Type',
-        },
-        body: JSON.stringify(result.Item),
+        headers: corsHeaders,
+        body: JSON.stringify(sanitizeItem(result.Item)),
       };
     }
 
@@ -75,11 +104,7 @@ export const handler = async (event: any) => {
     if (!result.Items || result.Items.length === 0) {
       return {
         statusCode: 404,
-        headers: { 
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Headers': 'Content-Type',
-        },
+        headers: corsHeaders,
         body: JSON.stringify({
           error: 'Product not found',
           gtin,
@@ -89,22 +114,14 @@ export const handler = async (event: any) => {
 
     return {
       statusCode: 200,
-      headers: { 
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-      },
-      body: JSON.stringify(result.Items[0]),
+      headers: corsHeaders,
+      body: JSON.stringify(sanitizeItem(result.Items[0])),
     };
   } catch (error) {
     console.error('Error querying DynamoDB:', error);
     return {
       statusCode: 500,
-      headers: { 
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-      },
+      headers: corsHeaders,
       body: JSON.stringify({ error: 'Internal server error' }),
     };
   }

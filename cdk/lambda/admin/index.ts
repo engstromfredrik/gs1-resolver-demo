@@ -4,6 +4,7 @@ import { DynamoDBDocumentClient, PutCommand, GetCommand, DeleteCommand, QueryCom
 const client = new DynamoDBClient({});
 const ddb = DynamoDBDocumentClient.from(client);
 const TABLE_NAME = process.env.TABLE_NAME!;
+const ALLOWED_ORIGIN = 'https://gs1-resolver.engstrom.cloud';
 
 export const handler = async (event: any) => {
   const method = event.httpMethod;
@@ -96,7 +97,9 @@ const response = (statusCode: number, body: any) => ({
   statusCode,
   headers: {
     'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Origin': ALLOWED_ORIGIN,
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
   },
   body: JSON.stringify(body),
 });
