@@ -14,12 +14,11 @@ export interface ProductData {
 }
 
 export interface Product {
-  PK: string;
-  SK: string;
   gtin: string;
   batch: string;
   linkType: string;
   targetUrl?: string;
   productData?: ProductData;
+  expiryDate?: string;
   updatedAt: string;
 }

@@ -4,7 +4,7 @@ set -e
 TABLE_NAME="gs1-resolver-products"
 REGION="${AWS_REGION:-eu-north-1}"
 
-echo "🌱 Seeding fun sample products to DynamoDB..."
+echo "🌱 Seeding fun sample products to DynamoDB (new SK pattern)..."
 echo "Table: $TABLE_NAME"
 echo "Region: $REGION"
 echo ""
@@ -15,24 +15,24 @@ aws dynamodb put-item \
   --region "$REGION" \
   --item '{
     "PK": {"S": "GTIN#1234567890001"},
-    "SK": {"S": "BATCH#MARIA2024"},
+    "SK": {"S": "BATCH#MARIA2024#LINKTYPE#gs1:productInfo"},
     "GSI1PK": {"S": "PRODUCT"},
-    "GSI1SK": {"S": "GTIN#1234567890001#BATCH#MARIA2024"},
+    "GSI1SK": {"S": "GTIN#1234567890001#BATCH#MARIA2024#LINKTYPE#gs1:productInfo"},
     "gtin": {"S": "1234567890001"},
     "batch": {"S": "MARIA2024"},
-    "linkType": {"S": "productInfo"},
+    "linkType": {"S": "gs1:productInfo"},
     "productData": {"M": {
       "name": {"S": "Marias Magiska Muffins"},
-      "description": {"S": "Himmelskt goda chokladmuffins bakade med kärlek"},
+      "description": {"S": "Himmelskt goda chokladmuffins bakade med karlek"},
       "weight": {"S": "400 g (6 st)"},
-      "manufacturer": {"S": "Maria'\''s Bakery AB"},
-      "brand": {"S": "Maria'\''s Magic"},
+      "manufacturer": {"S": "Marias Bakery AB"},
+      "brand": {"S": "Marias Magic"},
       "categories": {"S": "Bakverk, Muffins, Choklad, Fika"},
-      "ingredients": {"S": "Vetemjöl, socker, ägg, smör, choklad (20%), kakao, bakpulver, vanilj, salt, kärlek"},
-      "allergens": {"S": "Vete, ägg, mjölk. Kan innehålla spår av nötter"},
+      "ingredients": {"S": "Vetemjol, socker, agg, smor, choklad (20%), kakao, bakpulver, vanilj, salt"},
+      "allergens": {"S": "Vete, agg, mjolk. Kan innehalla spar av notter"},
       "origin": {"S": "Sverige"},
-      "packaging": {"S": "Kartong, återvinningsbar"},
-      "storage": {"S": "Förvaras svalt och torrt"},
+      "packaging": {"S": "Kartong"},
+      "storage": {"S": "Forvaras svalt och torrt"},
       "nutritionPer100g": {"M": {
         "energy": {"S": "1850 kJ / 442 kcal"},
         "fat": {"S": "22 g"},
@@ -46,7 +46,7 @@ aws dynamodb put-item \
     }},
     "updatedAt": {"S": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"}
   }'
-echo "✅ Added: Marias Magiska Muffins (1234567890001)"
+echo "✅ Marias Magiska Muffins"
 
 # Product 2: Fredrik's Fantastic Fish Fingers
 aws dynamodb put-item \
@@ -54,25 +54,25 @@ aws dynamodb put-item \
   --region "$REGION" \
   --item '{
     "PK": {"S": "GTIN#1234567890002"},
-    "SK": {"S": "BATCH#FRED2024"},
+    "SK": {"S": "BATCH#FRED2024#LINKTYPE#gs1:productInfo"},
     "GSI1PK": {"S": "PRODUCT"},
-    "GSI1SK": {"S": "GTIN#1234567890002#BATCH#FRED2024"},
+    "GSI1SK": {"S": "GTIN#1234567890002#BATCH#FRED2024#LINKTYPE#gs1:productInfo"},
     "gtin": {"S": "1234567890002"},
     "batch": {"S": "FRED2024"},
-    "linkType": {"S": "productInfo"},
+    "linkType": {"S": "gs1:productInfo"},
     "productData": {"M": {
       "name": {"S": "Fredriks Fantastiska Fiskpinnar"},
-      "description": {"S": "Krispiga fiskpinnar från Östersjön - Fredriks favorit!"},
+      "description": {"S": "Krispiga fiskpinnar - Fredriks favorit!"},
       "weight": {"S": "450 g (12 st)"},
-      "manufacturer": {"S": "Fredrik'\''s Fisk & Skaldjur AB"},
-      "brand": {"S": "Fredrik'\''s Finest"},
+      "manufacturer": {"S": "Fredriks Fisk AB"},
+      "brand": {"S": "Fredriks Finest"},
       "categories": {"S": "Fryst, Fisk, Fiskpinnar, Middag"},
-      "ingredients": {"S": "Torskfilé (65%), panering (vetemjöl, vatten, majsmjöl, salt, jäst), rapsolja"},
-      "allergens": {"S": "Fisk, vete. Kan innehålla spår av ägg"},
-      "origin": {"S": "Fisk från Östersjön, förädlad i Sverige"},
-      "packaging": {"S": "Frysförpackning, kartong"},
-      "storage": {"S": "Förvaras fryst vid -18°C"},
-      "certifications": {"S": "MSC-certifierad, Svenskt fiske"},
+      "ingredients": {"S": "Torskfile (65%), panering (vetemjol, vatten, majsmjol, salt, jast), rapsolja"},
+      "allergens": {"S": "Fisk, vete"},
+      "origin": {"S": "Sverige"},
+      "packaging": {"S": "Frysforpackning, kartong"},
+      "storage": {"S": "Forvaras fryst vid -18C"},
+      "certifications": {"S": "MSC-certifierad"},
       "nutritionPer100g": {"M": {
         "energy": {"S": "920 kJ / 220 kcal"},
         "fat": {"S": "11 g"},
@@ -86,7 +86,7 @@ aws dynamodb put-item \
     }},
     "updatedAt": {"S": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"}
   }'
-echo "✅ Added: Fredriks Fantastiska Fiskpinnar (1234567890002)"
+echo "✅ Fredriks Fantastiska Fiskpinnar"
 
 # Product 3: Martin's Marvelous Marmalade
 aws dynamodb put-item \
@@ -94,24 +94,24 @@ aws dynamodb put-item \
   --region "$REGION" \
   --item '{
     "PK": {"S": "GTIN#1234567890003"},
-    "SK": {"S": "BATCH#MART2024"},
+    "SK": {"S": "BATCH#MART2024#LINKTYPE#gs1:productInfo"},
     "GSI1PK": {"S": "PRODUCT"},
-    "GSI1SK": {"S": "GTIN#1234567890003#BATCH#MART2024"},
+    "GSI1SK": {"S": "GTIN#1234567890003#BATCH#MART2024#LINKTYPE#gs1:productInfo"},
     "gtin": {"S": "1234567890003"},
     "batch": {"S": "MART2024"},
-    "linkType": {"S": "productInfo"},
+    "linkType": {"S": "gs1:productInfo"},
     "productData": {"M": {
       "name": {"S": "Martins Magnifika Marmelad"},
       "description": {"S": "Apelsinmarmelad med bitter touch - Martins morgonmust!"},
       "weight": {"S": "450 g"},
-      "manufacturer": {"S": "Martin'\''s Marmelad & Sylt AB"},
-      "brand": {"S": "Martin'\''s Marvelous"},
-      "categories": {"S": "Sylt och marmelad, Frukost, Pålägg"},
-      "ingredients": {"S": "Apelsiner (55%), socker, vatten, citronsaft, pektin, apelsinolja"},
-      "allergens": {"S": "Inga kända allergener"},
-      "origin": {"S": "Apelsiner från Spanien, tillverkad i Sverige"},
-      "packaging": {"S": "Glasburk, återvinningsbar"},
-      "storage": {"S": "Förvaras svalt. Efter öppning i kylskåp"},
+      "manufacturer": {"S": "Martins Marmelad AB"},
+      "brand": {"S": "Martins Marvelous"},
+      "categories": {"S": "Sylt och marmelad, Frukost"},
+      "ingredients": {"S": "Apelsiner (55%), socker, vatten, citronsaft, pektin"},
+      "allergens": {"S": "Inga kanda allergener"},
+      "origin": {"S": "Spanien/Sverige"},
+      "packaging": {"S": "Glasburk"},
+      "storage": {"S": "Forvaras svalt"},
       "certifications": {"S": "Ekologisk"},
       "nutritionPer100g": {"M": {
         "energy": {"S": "1050 kJ / 250 kcal"},
@@ -126,7 +126,7 @@ aws dynamodb put-item \
     }},
     "updatedAt": {"S": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"}
   }'
-echo "✅ Added: Martins Magnifika Marmelad (1234567890003)"
+echo "✅ Martins Magnifika Marmelad"
 
 # Product 4: Karolina's Crispy Cookies
 aws dynamodb put-item \
@@ -134,24 +134,24 @@ aws dynamodb put-item \
   --region "$REGION" \
   --item '{
     "PK": {"S": "GTIN#1234567890004"},
-    "SK": {"S": "BATCH#KARO2024"},
+    "SK": {"S": "BATCH#KARO2024#LINKTYPE#gs1:productInfo"},
     "GSI1PK": {"S": "PRODUCT"},
-    "GSI1SK": {"S": "GTIN#1234567890004#BATCH#KARO2024"},
+    "GSI1SK": {"S": "GTIN#1234567890004#BATCH#KARO2024#LINKTYPE#gs1:productInfo"},
     "gtin": {"S": "1234567890004"},
     "batch": {"S": "KARO2024"},
-    "linkType": {"S": "productInfo"},
+    "linkType": {"S": "gs1:productInfo"},
     "productData": {"M": {
       "name": {"S": "Karolinas Krispiga Kakor"},
       "description": {"S": "Havrekakor med chokladbitar - Karolinas klassiker!"},
       "weight": {"S": "300 g"},
-      "manufacturer": {"S": "Karolina'\''s Kök & Konfektyr AB"},
-      "brand": {"S": "Karolina'\''s Crispy"},
+      "manufacturer": {"S": "Karolinas Konfektyr AB"},
+      "brand": {"S": "Karolinas Crispy"},
       "categories": {"S": "Kex och kakor, Fika, Choklad"},
-      "ingredients": {"S": "Havregryn (35%), vetemjöl, smör, socker, chokladbitar (15%), ägg, honung, bakpulver, vanilj, salt"},
-      "allergens": {"S": "Havre, vete, mjölk, ägg. Kan innehålla spår av nötter"},
+      "ingredients": {"S": "Havregryn (35%), vetemjol, smor, socker, chokladbitar (15%), agg, honung, bakpulver, vanilj, salt"},
+      "allergens": {"S": "Havre, vete, mjolk, agg"},
       "origin": {"S": "Sverige"},
-      "packaging": {"S": "Påse, återvinningsbar"},
-      "storage": {"S": "Förvaras torrt"},
+      "packaging": {"S": "Pase"},
+      "storage": {"S": "Forvaras torrt"},
       "certifications": {"S": "Fullkorn"},
       "nutritionPer100g": {"M": {
         "energy": {"S": "2100 kJ / 502 kcal"},
@@ -166,7 +166,7 @@ aws dynamodb put-item \
     }},
     "updatedAt": {"S": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"}
   }'
-echo "✅ Added: Karolinas Krispiga Kakor (1234567890004)"
+echo "✅ Karolinas Krispiga Kakor"
 
 # Product 5: Mikael's Mighty Meatballs
 aws dynamodb put-item \
@@ -174,25 +174,25 @@ aws dynamodb put-item \
   --region "$REGION" \
   --item '{
     "PK": {"S": "GTIN#1234567890005"},
-    "SK": {"S": "BATCH#MIKE2024"},
+    "SK": {"S": "BATCH#MIKE2024#LINKTYPE#gs1:productInfo"},
     "GSI1PK": {"S": "PRODUCT"},
-    "GSI1SK": {"S": "GTIN#1234567890005#BATCH#MIKE2024"},
+    "GSI1SK": {"S": "GTIN#1234567890005#BATCH#MIKE2024#LINKTYPE#gs1:productInfo"},
     "gtin": {"S": "1234567890005"},
     "batch": {"S": "MIKE2024"},
-    "linkType": {"S": "productInfo"},
+    "linkType": {"S": "gs1:productInfo"},
     "productData": {"M": {
-      "name": {"S": "Mikaels Mäktiga Köttbullar"},
-      "description": {"S": "Saftiga köttbullar av svenskt kött - Mikaels mästerverk!"},
+      "name": {"S": "Mikaels Maktiga Kottbullar"},
+      "description": {"S": "Saftiga kottbullar av svenskt kott - Mikaels masterverk!"},
       "weight": {"S": "500 g"},
-      "manufacturer": {"S": "Mikael'\''s Kött & Chark AB"},
-      "brand": {"S": "Mikael'\''s Mighty"},
-      "categories": {"S": "Kött, Köttbullar, Färdigmat, Middag"},
-      "ingredients": {"S": "Nötkött (70%), griskött (15%), lök, ströbröd (vete), mjölk, ägg, salt, peppar, kryddor"},
-      "allergens": {"S": "Vete, mjölk, ägg"},
-      "origin": {"S": "Svenskt kött"},
-      "packaging": {"S": "Vakuumförpackning"},
-      "storage": {"S": "Förvaras kallt, max +4°C"},
-      "certifications": {"S": "Svenskt kött, Från Sverige"},
+      "manufacturer": {"S": "Mikaels Kott AB"},
+      "brand": {"S": "Mikaels Mighty"},
+      "categories": {"S": "Kott, Kottbullar, Fardigmat, Middag"},
+      "ingredients": {"S": "Notkott (70%), griskott (15%), lok, strobrod (vete), mjolk, agg, salt, peppar"},
+      "allergens": {"S": "Vete, mjolk, agg"},
+      "origin": {"S": "Svenskt kott"},
+      "packaging": {"S": "Vakuumforpackning"},
+      "storage": {"S": "Forvaras kallt, max +4C"},
+      "certifications": {"S": "Svenskt kott, Fran Sverige"},
       "nutritionPer100g": {"M": {
         "energy": {"S": "1150 kJ / 275 kcal"},
         "fat": {"S": "20 g"},
@@ -206,7 +206,7 @@ aws dynamodb put-item \
     }},
     "updatedAt": {"S": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"}
   }'
-echo "✅ Added: Mikaels Mäktiga Köttbullar (1234567890005)"
+echo "✅ Mikaels Maktiga Kottbullar"
 
 # Product 6: Strand's Seaside Salmon
 aws dynamodb put-item \
@@ -214,25 +214,25 @@ aws dynamodb put-item \
   --region "$REGION" \
   --item '{
     "PK": {"S": "GTIN#1234567890006"},
-    "SK": {"S": "BATCH#STRAND2024"},
+    "SK": {"S": "BATCH#STRAND2024#LINKTYPE#gs1:productInfo"},
     "GSI1PK": {"S": "PRODUCT"},
-    "GSI1SK": {"S": "GTIN#1234567890006#BATCH#STRAND2024"},
+    "GSI1SK": {"S": "GTIN#1234567890006#BATCH#STRAND2024#LINKTYPE#gs1:productInfo"},
     "gtin": {"S": "1234567890006"},
     "batch": {"S": "STRAND2024"},
-    "linkType": {"S": "productInfo"},
+    "linkType": {"S": "gs1:productInfo"},
     "productData": {"M": {
-      "name": {"S": "Strands Strandnära Lax"},
-      "description": {"S": "Kallrökt lax från svenska västkusten - direkt från stranden!"},
+      "name": {"S": "Strands Strandnara Lax"},
+      "description": {"S": "Kallrokt lax fran svenska vastkusten - direkt fran stranden!"},
       "weight": {"S": "200 g"},
-      "manufacturer": {"S": "Strand'\''s Seafood AB"},
-      "brand": {"S": "Strand'\''s Seaside"},
-      "categories": {"S": "Fisk, Rökt fisk, Lax, Delikatesser"},
-      "ingredients": {"S": "Lax (97%), salt, röksmak"},
+      "manufacturer": {"S": "Strands Seafood AB"},
+      "brand": {"S": "Strands Seaside"},
+      "categories": {"S": "Fisk, Rokt fisk, Lax, Delikatesser"},
+      "ingredients": {"S": "Lax (97%), salt, roksmak"},
       "allergens": {"S": "Fisk"},
-      "origin": {"S": "Lax från svenska västkusten"},
-      "packaging": {"S": "Vakuumförpackning"},
-      "storage": {"S": "Förvaras kallt, max +4°C"},
-      "certifications": {"S": "ASC-certifierad, Svenskt fiske"},
+      "origin": {"S": "Svenska vastkusten"},
+      "packaging": {"S": "Vakuumforpackning"},
+      "storage": {"S": "Forvaras kallt, max +4C"},
+      "certifications": {"S": "ASC-certifierad"},
       "nutritionPer100g": {"M": {
         "energy": {"S": "920 kJ / 220 kcal"},
         "fat": {"S": "14 g"},
@@ -246,7 +246,7 @@ aws dynamodb put-item \
     }},
     "updatedAt": {"S": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"}
   }'
-echo "✅ Added: Strands Strandnära Lax (1234567890006)"
+echo "✅ Strands Strandnara Lax"
 
 # Product 7: Höjd's High-Quality Honey
 aws dynamodb put-item \
@@ -254,24 +254,24 @@ aws dynamodb put-item \
   --region "$REGION" \
   --item '{
     "PK": {"S": "GTIN#1234567890007"},
-    "SK": {"S": "BATCH#HOJD2024"},
+    "SK": {"S": "BATCH#HOJD2024#LINKTYPE#gs1:productInfo"},
     "GSI1PK": {"S": "PRODUCT"},
-    "GSI1SK": {"S": "GTIN#1234567890007#BATCH#HOJD2024"},
+    "GSI1SK": {"S": "GTIN#1234567890007#BATCH#HOJD2024#LINKTYPE#gs1:productInfo"},
     "gtin": {"S": "1234567890007"},
     "batch": {"S": "HOJD2024"},
-    "linkType": {"S": "productInfo"},
+    "linkType": {"S": "gs1:productInfo"},
     "productData": {"M": {
-      "name": {"S": "Höjds Högt Hyllad Honung"},
-      "description": {"S": "Ekologisk honung från svenska fjällängar - på hög höjd!"},
+      "name": {"S": "Hojds Hogt Hyllad Honung"},
+      "description": {"S": "Ekologisk honung fran svenska fjallangar - pa hog hojd!"},
       "weight": {"S": "350 g"},
-      "manufacturer": {"S": "Höjd'\''s Biodling AB"},
-      "brand": {"S": "Höjd'\''s High"},
-      "categories": {"S": "Honung, Ekologiskt, Frukost, Pålägg"},
+      "manufacturer": {"S": "Hojds Biodling AB"},
+      "brand": {"S": "Hojds High"},
+      "categories": {"S": "Honung, Ekologiskt, Frukost"},
       "ingredients": {"S": "Honung (100%)"},
-      "allergens": {"S": "Inga kända allergener"},
-      "origin": {"S": "Sverige, Jämtland"},
-      "packaging": {"S": "Glasburk, återvinningsbar"},
-      "storage": {"S": "Förvaras rumstempererat"},
+      "allergens": {"S": "Inga kanda allergener"},
+      "origin": {"S": "Sverige, Jamtland"},
+      "packaging": {"S": "Glasburk"},
+      "storage": {"S": "Forvaras rumstempererat"},
       "certifications": {"S": "Ekologisk, KRAV"},
       "nutritionPer100g": {"M": {
         "energy": {"S": "1360 kJ / 325 kcal"},
@@ -286,34 +286,34 @@ aws dynamodb put-item \
     }},
     "updatedAt": {"S": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"}
   }'
-echo "✅ Added: Höjds Högt Hyllad Honung (1234567890007)"
+echo "✅ Hojds Hogt Hyllad Honung"
 
-# Product 8: Engström's Energy Drink
+# Product 8: Engstrom's Energy Drink
 aws dynamodb put-item \
   --table-name "$TABLE_NAME" \
   --region "$REGION" \
   --item '{
     "PK": {"S": "GTIN#1234567890008"},
-    "SK": {"S": "BATCH#ENG2024"},
+    "SK": {"S": "BATCH#ENG2024#LINKTYPE#gs1:productInfo"},
     "GSI1PK": {"S": "PRODUCT"},
-    "GSI1SK": {"S": "GTIN#1234567890008#BATCH#ENG2024"},
+    "GSI1SK": {"S": "GTIN#1234567890008#BATCH#ENG2024#LINKTYPE#gs1:productInfo"},
     "gtin": {"S": "1234567890008"},
     "batch": {"S": "ENG2024"},
-    "linkType": {"S": "productInfo"},
+    "linkType": {"S": "gs1:productInfo"},
     "productData": {"M": {
-      "name": {"S": "Engströms Energigivande Dryck"},
-      "description": {"S": "Naturlig energidryck med guarana - Engströms elixir!"},
+      "name": {"S": "Engstroms Energigivande Dryck"},
+      "description": {"S": "Naturlig energidryck med guarana - Engstroms elixir!"},
       "volume": {"S": "500 ml"},
-      "manufacturer": {"S": "Engström'\''s Beverages AB"},
-      "brand": {"S": "Engström'\''s Energy"},
-      "categories": {"S": "Dryck, Energidryck, Läsk"},
-      "ingredients": {"S": "Vatten, socker, kolsyra, guaranaextrakt, koffein, vitaminer (B6, B12), citronsyra, naturlig arom"},
-      "allergens": {"S": "Inga kända allergener"},
+      "manufacturer": {"S": "Engstroms Beverages AB"},
+      "brand": {"S": "Engstroms Energy"},
+      "categories": {"S": "Dryck, Energidryck"},
+      "ingredients": {"S": "Vatten, socker, kolsyra, guaranaextrakt, koffein, vitaminer (B6, B12), citronsyra"},
+      "allergens": {"S": "Inga kanda allergener"},
       "origin": {"S": "Sverige"},
-      "packaging": {"S": "Aluminiumburk, återvinningsbar"},
-      "storage": {"S": "Förvaras svalt"},
+      "packaging": {"S": "Aluminiumburk"},
+      "storage": {"S": "Forvaras svalt"},
       "certifications": {"S": "Naturliga ingredienser"},
-      "nutritionPer100ml": {"M": {
+      "nutritionPer100g": {"M": {
         "energy": {"S": "180 kJ / 43 kcal"},
         "fat": {"S": "0 g"},
         "saturatedFat": {"S": "0 g"},
@@ -321,13 +321,12 @@ aws dynamodb put-item \
         "sugars": {"S": "10.5 g"},
         "fiber": {"S": "0 g"},
         "protein": {"S": "0 g"},
-        "salt": {"S": "0.1 g"},
-        "caffeine": {"S": "32 mg"}
+        "salt": {"S": "0.1 g"}
       }}
     }},
     "updatedAt": {"S": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"}
   }'
-echo "✅ Added: Engströms Energigivande Dryck (1234567890008)"
+echo "✅ Engstroms Energigivande Dryck"
 
 # Product 9: Edqvist's Exquisite Espresso
 aws dynamodb put-item \
@@ -335,24 +334,24 @@ aws dynamodb put-item \
   --region "$REGION" \
   --item '{
     "PK": {"S": "GTIN#1234567890009"},
-    "SK": {"S": "BATCH#EDQ2024"},
+    "SK": {"S": "BATCH#EDQ2024#LINKTYPE#gs1:productInfo"},
     "GSI1PK": {"S": "PRODUCT"},
-    "GSI1SK": {"S": "GTIN#1234567890009#BATCH#EDQ2024"},
+    "GSI1SK": {"S": "GTIN#1234567890009#BATCH#EDQ2024#LINKTYPE#gs1:productInfo"},
     "gtin": {"S": "1234567890009"},
     "batch": {"S": "EDQ2024"},
-    "linkType": {"S": "productInfo"},
+    "linkType": {"S": "gs1:productInfo"},
     "productData": {"M": {
       "name": {"S": "Edqvists Exklusiva Espresso"},
-      "description": {"S": "Mörkrostade kaffebönor från Etiopien - Edqvists elegans!"},
+      "description": {"S": "Morkrostade kaffebonor fran Etiopien - Edqvists elegans!"},
       "weight": {"S": "250 g"},
-      "manufacturer": {"S": "Edqvist'\''s Coffee Roasters AB"},
-      "brand": {"S": "Edqvist'\''s Exquisite"},
-      "categories": {"S": "Kaffe, Espresso, Hela bönor"},
-      "ingredients": {"S": "Kaffebönor (100%)"},
-      "allergens": {"S": "Inga kända allergener"},
+      "manufacturer": {"S": "Edqvists Coffee Roasters AB"},
+      "brand": {"S": "Edqvists Exquisite"},
+      "categories": {"S": "Kaffe, Espresso, Hela bonor"},
+      "ingredients": {"S": "Kaffebonor (100%)"},
+      "allergens": {"S": "Inga kanda allergener"},
       "origin": {"S": "Etiopien, rostat i Sverige"},
-      "packaging": {"S": "Påse med ventil, återvinningsbar"},
-      "storage": {"S": "Förvaras svalt och torrt, tätt försluten"},
+      "packaging": {"S": "Pase med ventil"},
+      "storage": {"S": "Forvaras svalt och torrt"},
       "certifications": {"S": "Ekologisk, Fairtrade, Rainforest Alliance"},
       "nutritionPer100g": {"M": {
         "energy": {"S": "0 kJ / 0 kcal"},
@@ -367,18 +366,12 @@ aws dynamodb put-item \
     }},
     "updatedAt": {"S": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"}
   }'
-echo "✅ Added: Edqvists Exklusiva Espresso (1234567890009)"
+echo "✅ Edqvists Exklusiva Espresso"
 
 echo ""
-echo "✨ Seeding complete! 9 fun products added."
+echo "✨ Seeding complete! 9 products added."
 echo ""
 echo "Test URLs:"
 echo "https://gs1-resolver.engstrom.cloud/01/1234567890001/10/MARIA2024"
-echo "https://gs1-resolver.engstrom.cloud/01/1234567890002/10/FRED2024"
-echo "https://gs1-resolver.engstrom.cloud/01/1234567890003/10/MART2024"
-echo "https://gs1-resolver.engstrom.cloud/01/1234567890004/10/KARO2024"
-echo "https://gs1-resolver.engstrom.cloud/01/1234567890005/10/MIKE2024"
-echo "https://gs1-resolver.engstrom.cloud/01/1234567890006/10/STRAND2024"
-echo "https://gs1-resolver.engstrom.cloud/01/1234567890007/10/HOJD2024"
-echo "https://gs1-resolver.engstrom.cloud/01/1234567890008/10/ENG2024"
-echo "https://gs1-resolver.engstrom.cloud/01/1234567890009/10/EDQ2024"
+echo "https://gs1-resolver.engstrom.cloud/01/1234567890001/10/MARIA2024?15=260930"
+echo "https://gs1-resolver.engstrom.cloud/01/1234567890001/10/MARIA2024?15=260930&linkType=gs1:productInfo"

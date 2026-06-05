@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { resolveProduct } from '../api/resolver';
 import { Product } from '../types';
 
@@ -22,9 +22,13 @@ const isValidRedirectUrl = (url: string): boolean => {
 
 export const ProductResolver = () => {
   const { gtin, batch } = useParams<{ gtin: string; batch: string }>();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const linkType = searchParams.get('linkType') || undefined;
+  const expiryDate = searchParams.get('15') || undefined;
 
   useEffect(() => {
     if (!gtin) {
@@ -32,7 +36,7 @@ export const ProductResolver = () => {
       return;
     }
 
-    resolveProduct(gtin, batch)
+    resolveProduct(gtin, batch, linkType, expiryDate)
       .then((data) => {
         setProduct(data);
         if (data.linkType === 'marketing' && data.targetUrl) {
@@ -48,7 +52,7 @@ export const ProductResolver = () => {
         navigate('/not-found', { state: { gtin, batch } });
       })
       .finally(() => setLoading(false));
-  }, [gtin, batch, navigate]);
+  }, [gtin, batch, linkType, expiryDate, navigate]);
 
   if (loading) {
     return (
@@ -69,7 +73,7 @@ export const ProductResolver = () => {
     <div style={styles.container}>
       <div style={styles.card}>
         <div style={styles.header}>
-          <div style={styles.badge}>{product.linkType === 'productInfo' ? '📦 Product Info' : '🔗 Marketing'}</div>
+          <div style={styles.badge}>{product.linkType?.startsWith('gs1:') ? `📦 ${product.linkType.replace('gs1:', '')}` : product.linkType === 'marketing' ? '🔗 Marketing' : '📦 Product Info'}</div>
           <h1 style={styles.productName}>{pd?.name || 'Product'}</h1>
           <p style={styles.description}>{pd?.description}</p>
         </div>
@@ -85,6 +89,12 @@ export const ProductResolver = () => {
               <span style={styles.label}>Batch</span>
               <span style={styles.value}>{product.batch}</span>
             </div>
+            {product.expiryDate && (
+              <div style={styles.infoBox}>
+                <span style={styles.label}>Expiry Date</span>
+                <span style={styles.value}>{product.expiryDate.replace(/(\d{2})(\d{2})(\d{2})/, '20$1-$2-$3')}</span>
+              </div>
+            )}
           </div>
         </div>
 

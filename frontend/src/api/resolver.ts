@@ -10,11 +10,18 @@ export const loadConfig = async () => {
   return config;
 };
 
-export const resolveProduct = async (gtin: string, batch?: string): Promise<Product> => {
+export const resolveProduct = async (gtin: string, batch?: string, linkType?: string, expiryDate?: string): Promise<Product> => {
   const cfg = await loadConfig();
-  const url = batch 
+  const base = batch 
     ? `${cfg.apiUrl}01/${gtin}/10/${batch}`
     : `${cfg.apiUrl}01/${gtin}`;
+  
+  const params = new URLSearchParams();
+  if (linkType) params.set('linkType', linkType);
+  if (expiryDate) params.set('15', expiryDate);
+  const qs = params.toString();
+  const url = qs ? `${base}?${qs}` : base;
+
   const response = await fetch(url);
   
   if (!response.ok) {
