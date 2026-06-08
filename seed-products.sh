@@ -368,10 +368,31 @@ aws dynamodb put-item \
   }'
 echo "✅ Edqvists Exklusiva Espresso"
 
+# Product 10: FIXA Batterier (Marketing Redirect)
+aws dynamodb put-item \
+  --table-name "$TABLE_NAME" \
+  --region "$REGION" \
+  --item '{
+    "PK": {"S": "GTIN#07311043015702"},
+    "SK": {"S": "BATCH#DEFAULT#LINKTYPE#marketing"},
+    "GSI1PK": {"S": "PRODUCT"},
+    "GSI1SK": {"S": "GTIN#07311043015702#BATCH#DEFAULT#LINKTYPE#marketing"},
+    "gtin": {"S": "07311043015702"},
+    "batch": {"S": "DEFAULT"},
+    "linkType": {"S": "marketing"},
+    "targetUrl": {"S": "https://www.axfood.se/om-axfood/egna-varor/produktinfo-batteri/"},
+    "productData": {"M": {
+      "name": {"S": "FIXA BATTERIER 8st LR03"},
+      "description": {"S": "AAA-batterier fran Axfoods Fixa-sortiment"}
+    }},
+    "updatedAt": {"S": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"}
+  }'
+echo "✅ FIXA BATTERIER (Marketing Redirect)"
+
 echo ""
-echo "✨ Seeding complete! 9 products added."
+echo "✨ Seeding complete! 10 products added (9 productInfo + 1 marketing redirect)."
 echo ""
 echo "Test URLs:"
 echo "https://gs1-resolver.engstrom.cloud/01/1234567890001/10/MARIA2024"
 echo "https://gs1-resolver.engstrom.cloud/01/1234567890001/10/MARIA2024?15=260930"
-echo "https://gs1-resolver.engstrom.cloud/01/1234567890001/10/MARIA2024?15=260930&linkType=gs1:productInfo"
+echo "https://gs1-resolver.engstrom.cloud/01/07311043015702"

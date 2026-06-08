@@ -32,7 +32,7 @@ const sanitizeItem = (item: any, expiryDate?: string) => {
 export const handler = async (event: any) => {
   const { gtin, batch } = event.pathParameters || {};
   const queryParams = event.queryStringParameters || {};
-  const linkType = queryParams.linkType || 'gs1:productInfo';
+  const linkType = queryParams.linkType;
   const expiryDate = queryParams['15'];
 
   if (!gtin) {
@@ -48,8 +48,7 @@ export const handler = async (event: any) => {
   }
 
   try {
-    if (batch) {
-      // Direct lookup with batch + linkType
+    if (batch && linkType) {
       const sk = `BATCH#${batch}#LINKTYPE#${linkType}`;
       const result = await ddb.send(new GetCommand({
         TableName: TABLE_NAME,
@@ -63,17 +62,20 @@ export const handler = async (event: any) => {
       return { statusCode: 200, headers: corsHeaders, body: JSON.stringify(sanitizeItem(result.Item, expiryDate)) };
     }
 
-    // No batch: query by GTIN, filter by linkType suffix
     const result = await ddb.send(new QueryCommand({
       TableName: TABLE_NAME,
       KeyConditionExpression: 'PK = :pk AND begins_with(SK, :skPrefix)',
       ExpressionAttributeValues: {
         ':pk': `GTIN#${gtin}`,
-        ':skPrefix': 'BATCH#',
+        ':skPrefix': batch ? `BATCH#${batch}#` : 'BATCH#',
       },
     }));
 
-    const item = result.Items?.find(i => i.linkType === linkType);
+    if (!result.Items?.length) {
+      return { statusCode: 404, headers: corsHeaders, body: JSON.stringify({ error: 'Product not found', gtin }) };
+    }
+
+    const item = linkType ? result.Items.find(i => i.linkType === linkType) : result.Items[0];
     if (!item) {
       return { statusCode: 404, headers: corsHeaders, body: JSON.stringify({ error: 'Product not found', gtin, linkType }) };
     }
